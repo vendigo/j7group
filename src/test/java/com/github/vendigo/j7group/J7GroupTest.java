@@ -151,4 +151,32 @@ public class J7GroupTest {
                         hasEntry(8, "Kyle")
                 ));
     }
+
+    @Test
+    public void testMapToListsAgeToName() throws Exception {
+        Map<Integer, List<String>> result = mapToLists(Arrays.asList(petro, vinsent, stan, stan, boris, kyle), 
+                from(Person.class).getAge(),
+                to(Person.class).getName());
+
+        assertThat(result, allOf(
+                hasEntry(17, Collections.singletonList("Petro")),
+                hasEntry(50, Collections.singletonList("Vinsent")),
+                hasEntry(47, Collections.singletonList("Boris")),
+                hasEntry(8, Arrays.asList("Stan", "Stan", "Kyle"))
+        ));
+    }
+
+    @Test
+    public void testMapToSetsAgeToName() throws Exception {
+        Map<Integer, Set<String>> result = mapToSets(Arrays.asList(petro, vinsent, stan, stan, boris, kyle),
+                from(Person.class).getAge(),
+                to(Person.class).getName());
+
+        assertThat(result, allOf(
+                hasEntry(17, TestCollections.setOf("Petro")),
+                hasEntry(50, TestCollections.setOf("Vinsent")),
+                hasEntry(47, TestCollections.setOf("Boris")),
+                hasEntry(8, TestCollections.setOf("Stan", "Kyle"))
+        ));
+    }
 }

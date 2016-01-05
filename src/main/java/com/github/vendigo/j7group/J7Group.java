@@ -4,7 +4,8 @@ import java.util.*;
 
 import static com.github.vendigo.j7group.GroupHelper.collectToCollection;
 import static com.github.vendigo.j7group.GroupHelper.groupToCollection;
-import static com.github.vendigo.j7group.ProxyHelper.*;
+import static com.github.vendigo.j7group.ProxyHelper.interceptAsFirstArgument;
+import static com.github.vendigo.j7group.ProxyHelper.interceptAsSecondArgument;
 
 public class J7Group {
 
@@ -63,4 +64,12 @@ public class J7Group {
         return resultMap;
     }
 
+    public static <T, K, V> Map<K, List<V>> mapToLists(Collection<T> collection, K from, V to) {
+        return GroupHelper.<T, K, V, List<V>>mapToCollection(collection, ArrayList.class);
+    }
+
+
+    public static <T, K, V> Map<K, Set<V>> mapToSets(Collection<T> collection, K from, V to) {
+        return GroupHelper.<T, K, V, Set<V>>mapToCollection(collection, HashSet.class);
+    }
 }
