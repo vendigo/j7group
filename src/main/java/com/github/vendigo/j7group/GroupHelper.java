@@ -24,6 +24,24 @@ class GroupHelper {
         return collected;
     }
 
+    public static <K, V, C, T> Map<K, C> genericGroup(Collection<T> collection, GroupStrategy<K, V, C> groupStrategy,
+                                                      ValueExtractor<T, V> valueExtractor) {
+        Map<K, C> resultMap = new HashMap<>();
+
+        for (T entity : collection) {
+            K key = extractFirstArgument(entity);
+            C oldValue = resultMap.get(key);
+            V newValue = valueExtractor.extract(entity);
+            if (oldValue == null) {
+                groupStrategy.handleFirstOccurrence(key, newValue, resultMap);
+            } else {
+                groupStrategy.handleNonFirstOccurrence(key, newValue, oldValue, resultMap);
+            }
+        }
+
+        return resultMap;
+    }
+
     @SuppressWarnings({"unchecked", "ConstantConditions"})
     static <K, V, T extends Collection<V>> Map<K, T> groupToCollection(Collection<V> collection,
                                                                        Class<? extends Collection> collectionClass) {
@@ -44,14 +62,14 @@ class GroupHelper {
 
     @SuppressWarnings({"ConstantConditions", "unchecked"})
     static <T, K, V, C extends Collection<V>> Map<K, C> mapToCollection(Collection<T> collection,
-                                                                     Class<? extends Collection> collectionClass) {
+                                                                        Class<? extends Collection> collectionClass) {
         Map<K, C> resultMap = new HashMap<>();
 
         for (T entity : collection) {
             K key = extractFirstArgument(entity);
             C valuesForKey = resultMap.get(key);
             if (valuesForKey == null) {
-                valuesForKey = (C)createCollectionInstance(collectionClass, DEFAULT_CAPACITY);
+                valuesForKey = (C) createCollectionInstance(collectionClass, DEFAULT_CAPACITY);
             }
             valuesForKey.add(ProxyHelper.<V>extractSecondArgument(entity));
             resultMap.put(key, valuesForKey);

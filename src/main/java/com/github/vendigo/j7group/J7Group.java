@@ -3,6 +3,7 @@ package com.github.vendigo.j7group;
 import java.util.*;
 
 import static com.github.vendigo.j7group.GroupHelper.collectToCollection;
+import static com.github.vendigo.j7group.GroupHelper.genericGroup;
 import static com.github.vendigo.j7group.GroupHelper.groupToCollection;
 import static com.github.vendigo.j7group.ProxyHelper.interceptAsFirstArgument;
 import static com.github.vendigo.j7group.ProxyHelper.interceptAsSecondArgument;
@@ -36,14 +37,8 @@ public class J7Group {
         return (Set<V>) collectToCollection(from, HashSet.class, from.size());
     }
 
-    public static <K, V> Map<K, V> group(Collection<V> collection, K by) {
-        Map<K, V> resultMap = new HashMap<>();
-
-        for (V entity : collection) {
-            resultMap.put(ProxyHelper.<K>extractFirstArgument(entity), entity);
-        }
-
-        return resultMap;
+    public static <K, T> Map<K, T> group(Collection<T> collection, K by) {
+        return genericGroup(collection, new RetainLastGroupStrategy<K, T>(), new EntityAsValueExtractor<T>());
     }
 
     public static <K, V> Map<K, List<V>> groupToLists(Collection<V> collection, K by) {
