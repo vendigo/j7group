@@ -4,7 +4,6 @@ import java.util.*;
 
 import static com.github.vendigo.j7group.GroupHelper.collectToCollection;
 import static com.github.vendigo.j7group.GroupHelper.genericGroup;
-import static com.github.vendigo.j7group.GroupHelper.groupToCollection;
 import static com.github.vendigo.j7group.ProxyHelper.interceptAsFirstArgument;
 import static com.github.vendigo.j7group.ProxyHelper.interceptAsSecondArgument;
 
@@ -41,12 +40,16 @@ public class J7Group {
         return genericGroup(collection, new RetainLastGroupStrategy<K, T>(), new EntityAsValueExtractor<T>());
     }
 
-    public static <K, V> Map<K, List<V>> groupToLists(Collection<V> collection, K by) {
-        return groupToCollection(collection, ArrayList.class);
+    public static <K, T> Map<K, List<T>> groupToLists(Collection<T> collection, K by) {
+        return genericGroup(collection, new ToCollectionGroupStrategy<K, T, List<T>>(ArrayList.class,
+                        collection.size()),
+                new EntityAsValueExtractor<T>());
     }
 
-    public static <K, V> Map<K, Set<V>> groupToSets(Collection<V> collection, K by) {
-        return groupToCollection(collection, HashSet.class);
+    public static <K, T> Map<K, Set<T>> groupToSets(Collection<T> collection, K by) {
+        return genericGroup(collection, new ToCollectionGroupStrategy<K, T, Set<T>>(HashSet.class,
+                        collection.size()),
+                new EntityAsValueExtractor<T>());
     }
 
     public static <K, V, T> Map<K, V> map(Collection<T> collection, K from, V to) {
