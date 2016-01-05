@@ -7,14 +7,14 @@ import java.util.Map;
 import static com.github.vendigo.j7group.ProxyHelper.extractFirstArgument;
 
 class GroupHelper {
-    private static final int DEFAULT_CAPACITY = 10;
+    public static final int DEFAULT_CAPACITY = 10;
 
     private GroupHelper() {
     }
 
     @SuppressWarnings("ConstantConditions")
-    static <T, V> Collection<V> collectToCollection(Collection<T> from, Class<? extends Collection> collectionClass,
-                                                    int initialCapacity) {
+    static <T, V> Collection<V> genericCollect(Collection<T> from, Class<? extends Collection> collectionClass,
+                                               int initialCapacity) {
         Collection<V> collected = createCollectionInstance(collectionClass, initialCapacity);
 
         for (T entity : from) {
@@ -42,28 +42,10 @@ class GroupHelper {
         return resultMap;
     }
 
-    @SuppressWarnings({"ConstantConditions", "unchecked"})
-    static <T, K, V, C extends Collection<V>> Map<K, C> mapToCollection(Collection<T> collection,
-                                                                        Class<? extends Collection> collectionClass) {
-        Map<K, C> resultMap = new HashMap<>();
-
-        for (T entity : collection) {
-            K key = extractFirstArgument(entity);
-            C valuesForKey = resultMap.get(key);
-            if (valuesForKey == null) {
-                valuesForKey = createCollectionInstance(collectionClass, DEFAULT_CAPACITY);
-            }
-            valuesForKey.add(ProxyHelper.<V>extractSecondArgument(entity));
-            resultMap.put(key, valuesForKey);
-        }
-
-        return resultMap;
-    }
-
     @SuppressWarnings("unchecked")
     static <C extends Collection> C createCollectionInstance(Class<? extends Collection> collectionClass, int initialCapacity) {
         try {
-            return (C)collectionClass.getConstructor(int.class).newInstance(initialCapacity);
+            return (C) collectionClass.getConstructor(int.class).newInstance(initialCapacity);
         } catch (Exception e) {
             e.printStackTrace();
         }

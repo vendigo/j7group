@@ -7,10 +7,10 @@ import net.sf.cglib.proxy.MethodProxy;
 import java.lang.reflect.Method;
 
 class ProxyHelper {
-    private ProxyHelper() {}
-
     private final static ThreadLocal<Method> firstCalledMethod = new ThreadLocal<>();
     private final static ThreadLocal<Method> secondCalledMethod = new ThreadLocal<>();
+    private ProxyHelper() {
+    }
 
     static <T> T interceptAsFirstArgument(Class<T> entityClass) {
         return createProxy(entityClass, firstCalledMethod);

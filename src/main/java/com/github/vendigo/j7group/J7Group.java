@@ -2,7 +2,7 @@ package com.github.vendigo.j7group;
 
 import java.util.*;
 
-import static com.github.vendigo.j7group.GroupHelper.collectToCollection;
+import static com.github.vendigo.j7group.GroupHelper.genericCollect;
 import static com.github.vendigo.j7group.GroupHelper.genericGroup;
 import static com.github.vendigo.j7group.ProxyHelper.interceptAsFirstArgument;
 import static com.github.vendigo.j7group.ProxyHelper.interceptAsSecondArgument;
@@ -29,11 +29,11 @@ public class J7Group {
     }
 
     public static <T, V> List<V> collectToListFrom(Collection<T> from, V field) {
-        return (List<V>) collectToCollection(from, ArrayList.class, from.size());
+        return (List<V>) genericCollect(from, ArrayList.class, from.size());
     }
 
     public static <T, V> Set<V> collectToSetFrom(Collection<T> from, V field) {
-        return (Set<V>) collectToCollection(from, HashSet.class, from.size());
+        return (Set<V>) genericCollect(from, HashSet.class, from.size());
     }
 
     public static <K, T> Map<K, T> group(Collection<T> collection, K by) {
@@ -53,21 +53,17 @@ public class J7Group {
     }
 
     public static <K, V, T> Map<K, V> map(Collection<T> collection, K from, V to) {
-        Map<K, V> resultMap = new HashMap<>();
-
-        for (T entity : collection) {
-            resultMap.put(ProxyHelper.<K>extractFirstArgument(entity), ProxyHelper.<V>extractSecondArgument(entity));
-        }
-
-        return resultMap;
+        return genericGroup(collection, new RetainLastGroupStrategy<K, V>(),
+                new SecondArgumentValueExtractor<T, V>());
     }
 
-    public static <T, K, V> Map<K, List<V>> mapToLists(Collection<T> collection, K from, V to) {
-        return GroupHelper.<T, K, V, List<V>>mapToCollection(collection, ArrayList.class);
+    public static <K, V, T> Map<K, List<V>> mapToLists(Collection<T> collection, K from, V to) {
+        return genericGroup(collection, new ToCollectionGroupStrategy<K, V, List<V>>(ArrayList.class,
+                GroupHelper.DEFAULT_CAPACITY), new SecondArgumentValueExtractor<T, V>());
     }
-
 
     public static <T, K, V> Map<K, Set<V>> mapToSets(Collection<T> collection, K from, V to) {
-        return GroupHelper.<T, K, V, Set<V>>mapToCollection(collection, HashSet.class);
+        return genericGroup(collection, new ToCollectionGroupStrategy<K, V, Set<V>>(HashSet.class,
+                GroupHelper.DEFAULT_CAPACITY), new SecondArgumentValueExtractor<T, V>());
     }
 }
