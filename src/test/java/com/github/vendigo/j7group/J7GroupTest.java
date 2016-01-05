@@ -2,17 +2,17 @@ package com.github.vendigo.j7group;
 
 import org.junit.Test;
 
-import java.util.Arrays;
-import java.util.Collections;
+import java.util.*;
 
 import static com.github.vendigo.j7group.J7Group.*;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.collection.IsEmptyCollection.emptyCollectionOf;
 import static org.hamcrest.collection.IsMapContaining.hasEntry;
 import static org.hamcrest.core.AllOf.allOf;
 import static org.hamcrest.core.IsCollectionContaining.hasItems;
 
-public class TestJ7Group {
+public class J7GroupTest {
     private final Person petro = new Person("Petro", "Pomagai", 17);
     private final Person stan = new Person("Stan", "Marsh", 8);
     private final Person kyle = new Person("Kyle", "Broflovski", 8);
@@ -20,26 +20,44 @@ public class TestJ7Group {
     private final Person vinsent = new Person("Vinsent", "Vega", 50);
 
     @Test
-    public void testCollectNames() throws Exception {
-        assertThat(collectFrom(Arrays.asList(petro, boris, vinsent), field(Person.class).getName()),
-                hasItems("Petro", "Boris", "Vinsent"));
+    public void testCollectNamesToList() throws Exception {
+        List<String> result = collectToListFrom(Arrays.asList(petro, boris, vinsent), field(Person.class).getName());
+
+        assertThat(result, hasSize(3));
+        assertThat(result, hasItems("Petro", "Boris", "Vinsent"));
     }
 
     @Test
-    public void testCollectAges() throws Exception {
-        assertThat(collectFrom(Arrays.asList(petro, boris, vinsent), field(Person.class).getAge()),
-                hasItems(17, 47, 50));
+    public void testCollectAgesToList() throws Exception {
+        List<Integer> result = collectToListFrom(Arrays.asList(petro, boris, vinsent, kyle, stan),
+                field(Person.class).getAge());
+
+        assertThat(result, hasSize(5));
+        assertThat(result, hasItems(17, 47, 50, 8, 8));
+    }
+
+    @Test
+    public void testCollectAgesToSet() throws Exception {
+        Set<Integer> result = collectToSetFrom(Arrays.asList(petro, boris, vinsent, kyle, stan),
+                field(Person.class).getAge());
+
+        assertThat(result, hasSize(4));
+        assertThat(result, hasItems(17, 47, 50, 8));
     }
 
     @Test
     public void testCollectFromEmptyList() throws Exception {
-        assertThat(collectFrom(Collections.emptyList(), field(Person.class).getName()),
-                emptyCollectionOf(String.class));
+        List<String> result = collectToListFrom(Collections.emptyList(), field(Person.class).getName());
+
+        assertThat(result, emptyCollectionOf(String.class));
     }
 
     @Test
     public void testGroupBySurname() throws Exception {
-        assertThat(group(Arrays.asList(petro, boris, vinsent), by(Person.class).getSurname()),
+        Map<String, Person> result = group(Arrays.asList(petro, boris, vinsent), by(Person.class).getSurname());
+
+        assertThat(result.keySet(), hasSize(3));
+        assertThat(result,
                 allOf(
                         hasEntry("Pomagai", petro),
                         hasEntry("Britva", boris),
@@ -49,8 +67,9 @@ public class TestJ7Group {
 
     @Test
     public void testGroupByAge() throws Exception {
-        assertThat(group(Arrays.asList(petro, boris, vinsent), by(Person.class).getAge()),
-                allOf(
+        Map<Integer, Person> result = group(Arrays.asList(petro, boris, vinsent), by(Person.class).getAge());
+
+        assertThat(result, allOf(
                         hasEntry(17, petro),
                         hasEntry(47, boris),
                         hasEntry(50, vinsent)
@@ -59,8 +78,9 @@ public class TestJ7Group {
 
     @Test
     public void testGroupByAgeRemainsLast() throws Exception {
-        assertThat(group(Arrays.asList(petro, boris, kyle, vinsent, stan), by(Person.class).getAge()),
-                allOf(
+        Map<Integer, Person> result = group(Arrays.asList(petro, boris, kyle, vinsent, stan), by(Person.class).getAge());
+
+        assertThat(result, allOf(
                         hasEntry(17, petro),
                         hasEntry(47, boris),
                         hasEntry(50, vinsent),
@@ -71,8 +91,10 @@ public class TestJ7Group {
 
     @Test
     public void testGroupToListsByAge() throws Exception {
-        assertThat(groupToLists(Arrays.asList(petro, boris, stan, stan, vinsent, kyle), by(Person.class).getAge()),
-                allOf(
+        Map<Integer, List<Person>> result = groupToLists(Arrays.asList(petro, boris, stan, stan, vinsent, kyle),
+                by(Person.class).getAge());
+
+        assertThat(result, allOf(
                         hasEntry(8, Arrays.asList(stan, stan, kyle)),
                         hasEntry(17, Collections.singletonList(petro)),
                         hasEntry(47, Collections.singletonList(boris)),
@@ -82,8 +104,10 @@ public class TestJ7Group {
 
     @Test
     public void testGroupToSetsByAge() throws Exception {
-        assertThat(groupToSets(Arrays.asList(petro, boris, stan, stan, vinsent, kyle), by(Person.class).getAge()),
-                allOf(
+        Map<Integer, Set<Person>> result = groupToSets(Arrays.asList(petro, boris, stan, stan, vinsent, kyle),
+                by(Person.class).getAge());
+
+        assertThat(result, allOf(
                         hasEntry(8, TestCollections.setOf(stan, kyle)),
                         hasEntry(17, TestCollections.setOf(petro)),
                         hasEntry(47, TestCollections.setOf(boris)),
@@ -93,8 +117,10 @@ public class TestJ7Group {
 
     @Test
     public void testMapNameToSurname() throws Exception {
-        assertThat(map(Arrays.asList(petro, vinsent, boris), from(Person.class).getName(), to(Person.class).getSurname()),
-                allOf(
+        Map<String, String> result = map(Arrays.asList(petro, vinsent, boris), from(Person.class).getName(),
+                to(Person.class).getSurname());
+
+        assertThat(result, allOf(
                         hasEntry("Petro", "Pomagai"),
                         hasEntry("Vinsent", "Vega"),
                         hasEntry("Boris", "Britva")
@@ -103,8 +129,10 @@ public class TestJ7Group {
 
     @Test
     public void testMapAgeToName() throws Exception {
-        assertThat(map(Arrays.asList(petro, vinsent, boris), from(Person.class).getAge(), to(Person.class).getName()),
-                allOf(
+        Map<Integer, String> result = map(Arrays.asList(petro, vinsent, boris), from(Person.class).getAge(),
+                to(Person.class).getName());
+
+        assertThat(result, allOf(
                         hasEntry(17, "Petro"),
                         hasEntry(50, "Vinsent"),
                         hasEntry(47, "Boris")
@@ -113,8 +141,10 @@ public class TestJ7Group {
 
     @Test
     public void testMapAgeToNameRemainsLast() throws Exception {
-        assertThat(map(Arrays.asList(petro, vinsent, stan, boris, kyle), from(Person.class).getAge(), to(Person.class).getName()),
-                allOf(
+        Map<Integer, String> result = map(Arrays.asList(petro, vinsent, stan, boris, kyle), from(Person.class).getAge(),
+                to(Person.class).getName());
+
+        assertThat(result, allOf(
                         hasEntry(17, "Petro"),
                         hasEntry(50, "Vinsent"),
                         hasEntry(47, "Boris"),
