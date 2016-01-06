@@ -5,7 +5,7 @@ import java.util.Map;
 
 import static com.github.vendigo.j7group.GroupHelper.createCollectionInstance;
 
-public class ToCollectionGroupStrategy<K, V, C extends Collection<V>> implements GroupStrategy<K, V, C> {
+class ToCollectionGroupStrategy<K, V, C extends Collection<V>> implements GroupStrategy<K, V, C> {
 
     private final Class<? extends Collection> collectionClass;
     private final int initialCapacity;

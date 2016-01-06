@@ -2,7 +2,7 @@ package com.github.vendigo.j7group;
 
 import java.util.Map;
 
-public class KeepLastGroupStrategy<K, V> implements GroupStrategy<K, V, V> {
+class KeepLastGroupStrategy<K, V> implements GroupStrategy<K, V, V> {
 
     @Override
     public void handleFirstOccurrence(K key, V newValue, Map<K, V> map) {

@@ -1,8 +1,10 @@
 package com.github.vendigo.j7group;
 
+import com.github.vendigo.j7group.key.ambiguity.KeyAmbiguityException;
+
 import java.util.Map;
 
-public class FailFastGroupStrategy<K, V> implements GroupStrategy<K, V, V> {
+class FailFastGroupStrategy<K, V> implements GroupStrategy<K, V, V> {
     @Override
     public void handleFirstOccurrence(K key, V newValue, Map<K, V> map) {
         map.put(key, newValue);

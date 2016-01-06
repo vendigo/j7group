@@ -1,10 +1,13 @@
 package com.github.vendigo.j7group;
 
+import com.github.vendigo.j7group.key.ambiguity.KeyAmbiguityException;
+import com.github.vendigo.j7group.key.ambiguity.KeyAmbiguityPolicy;
 import org.junit.Test;
 
 import java.util.*;
 
 import static com.github.vendigo.j7group.J7Group.*;
+import static com.github.vendigo.j7group.J7GroupPrepositions.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.collection.IsEmptyCollection.emptyCollectionOf;

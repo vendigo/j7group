@@ -1,11 +1,13 @@
 package com.github.vendigo.j7group;
 
+import com.github.vendigo.j7group.key.ambiguity.KeyAmbiguityPolicy;
+
 import java.util.*;
 
 import static com.github.vendigo.j7group.ProxyHelper.extractFirstArgument;
 
-public class GroupHelper {
-    public static final int DEFAULT_CAPACITY = 10;
+class GroupHelper {
+    static final int DEFAULT_CAPACITY = 10;
 
     private GroupHelper() {
     }
