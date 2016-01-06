@@ -6,7 +6,7 @@ import java.util.Map;
 
 import static com.github.vendigo.j7group.ProxyHelper.extractFirstArgument;
 
-class GroupHelper {
+public class GroupHelper {
     public static final int DEFAULT_CAPACITY = 10;
 
     private GroupHelper() {
@@ -40,6 +40,21 @@ class GroupHelper {
         }
 
         return resultMap;
+    }
+
+     static <K, T> GroupStrategy<K, T, T> resolveGroupStrategy(KeyAmbiguityPolicy keyAmbiguityPolicy) {
+        GroupStrategy<K, T, T> groupStrategy;
+        switch (keyAmbiguityPolicy) {
+            case KEEP_FIRST:
+                groupStrategy = new KeepFirstGroupStrategy<>();
+                break;
+            case FAIL_FAST:
+                groupStrategy = new FailFastGroupStrategy<>();
+                break;
+            default:
+                groupStrategy = new KeepLastGroupStrategy<>();
+        }
+        return groupStrategy;
     }
 
     @SuppressWarnings("unchecked")

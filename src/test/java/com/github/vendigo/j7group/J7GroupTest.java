@@ -77,7 +77,7 @@ public class J7GroupTest {
     }
 
     @Test
-    public void testGroupByAgeRemainsLast() throws Exception {
+    public void testGroupByAgeKeepLast() throws Exception {
         Map<Integer, Person> result = group(Arrays.asList(petro, boris, kyle, vinsent, stan), by(Person.class).getAge());
 
         assertThat(result, allOf(
@@ -88,6 +88,24 @@ public class J7GroupTest {
                 ));
     }
 
+    @Test
+    public void testGroupByAgeKeepFirst() throws Exception {
+        Map<Integer, Person> result = group(Arrays.asList(petro, boris, kyle, vinsent, stan), by(Person.class).getAge(),
+                KeyAmbiguityPolicy.KEEP_FIRST);
+
+        assertThat(result, allOf(
+                hasEntry(17, petro),
+                hasEntry(47, boris),
+                hasEntry(50, vinsent),
+                hasEntry(8, kyle)
+        ));
+    }
+
+    @Test(expected = KeyAmbiguityException.class)
+    public void testGroupByAgeFailFast() throws Exception {
+        group(Arrays.asList(petro, boris, kyle, vinsent, stan), by(Person.class).getAge(),
+                KeyAmbiguityPolicy.FAIL_FAST);
+    }
 
     @Test
     public void testGroupToListsByAge() throws Exception {
@@ -140,7 +158,7 @@ public class J7GroupTest {
     }
 
     @Test
-    public void testMapAgeToNameRemainsLast() throws Exception {
+    public void testMapAgeToNameKeepLast() throws Exception {
         Map<Integer, String> result = map(Arrays.asList(petro, vinsent, stan, boris, kyle), from(Person.class).getAge(),
                 to(Person.class).getName());
 
@@ -150,6 +168,25 @@ public class J7GroupTest {
                         hasEntry(47, "Boris"),
                         hasEntry(8, "Kyle")
                 ));
+    }
+
+    @Test
+    public void testMapAgeToNameKeepFirst() throws Exception {
+        Map<Integer, String> result = map(Arrays.asList(petro, vinsent, stan, boris, kyle), from(Person.class).getAge(),
+                to(Person.class).getName(), KeyAmbiguityPolicy.KEEP_FIRST);
+
+        assertThat(result, allOf(
+                hasEntry(17, "Petro"),
+                hasEntry(50, "Vinsent"),
+                hasEntry(47, "Boris"),
+                hasEntry(8, "Stan")
+        ));
+    }
+
+    @Test(expected = KeyAmbiguityException.class)
+    public void testMapAgeToNameFailFast() throws Exception {
+        map(Arrays.asList(petro, vinsent, stan, boris, kyle), from(Person.class).getAge(),
+                to(Person.class).getName(), KeyAmbiguityPolicy.FAIL_FAST);
     }
 
     @Test

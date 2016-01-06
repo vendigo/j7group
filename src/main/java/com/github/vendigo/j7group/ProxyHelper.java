@@ -6,7 +6,7 @@ import net.sf.cglib.proxy.MethodProxy;
 
 import java.lang.reflect.Method;
 
-class ProxyHelper {
+public class ProxyHelper {
     private final static ThreadLocal<Method> firstCalledMethod = new ThreadLocal<>();
     private final static ThreadLocal<Method> secondCalledMethod = new ThreadLocal<>();
     private ProxyHelper() {
