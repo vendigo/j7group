@@ -2,9 +2,7 @@ package com.github.vendigo.j7group;
 
 import java.util.*;
 
-import static com.github.vendigo.j7group.GroupHelper.genericCollect;
-import static com.github.vendigo.j7group.GroupHelper.genericGroup;
-import static com.github.vendigo.j7group.GroupHelper.resolveGroupStrategy;
+import static com.github.vendigo.j7group.GroupHelper.*;
 import static com.github.vendigo.j7group.ProxyHelper.interceptAsFirstArgument;
 import static com.github.vendigo.j7group.ProxyHelper.interceptAsSecondArgument;
 
@@ -27,6 +25,10 @@ public final class J7Group {
 
     public static <T> T to(Class<T> entityClass) {
         return interceptAsSecondArgument(entityClass);
+    }
+
+    public static <T, V> boolean isUniqueIn(Collection<T> in, V field) {
+        return checkUniqueness(in);
     }
 
     public static <T, V> List<V> collectToListFrom(Collection<T> from, V field) {

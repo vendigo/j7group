@@ -10,6 +10,7 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.collection.IsEmptyCollection.emptyCollectionOf;
 import static org.hamcrest.collection.IsMapContaining.hasEntry;
 import static org.hamcrest.core.AllOf.allOf;
+import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsCollectionContaining.hasItems;
 
 public class J7GroupTest {
@@ -18,6 +19,20 @@ public class J7GroupTest {
     private final Person kyle = new Person("Kyle", "Broflovski", 8);
     private final Person boris = new Person("Boris", "Britva", 47);
     private final Person vinsent = new Person("Vinsent", "Vega", 50);
+
+    @Test
+    public void testIsUniqueNames() throws Exception {
+        boolean result = isUniqueIn(Arrays.asList(petro, boris, vinsent, stan, kyle), field(Person.class).getName());
+
+        assertThat(result, is(true));
+    }
+
+    @Test
+    public void testIsUniqueAges() throws Exception {
+        boolean result = isUniqueIn(Arrays.asList(petro, boris, vinsent, stan, kyle), field(Person.class).getAge());
+
+        assertThat(result, is(false));
+    }
 
     @Test
     public void testCollectNamesToList() throws Exception {
