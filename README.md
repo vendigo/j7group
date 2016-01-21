@@ -33,6 +33,7 @@ Lets say, we have class Person:
         public int getAge() {
             return age;
         }
+        }
 ```
 
 And somewhere else:
@@ -64,7 +65,7 @@ Or to group characters by name:
     // Got {"Stan" -> stan, "Kyle" -> kyle, "Eric" -> eric, "Kenny" -> kenny, "Randy" -> randy}
 ```
 
-Or to group characters by age. However there equal ages, so we want to get map of lists:
+Or to group characters by age. However there are equal ages, so we want to get map of lists:
 
 ```java
 
@@ -72,7 +73,7 @@ Or to group characters by age. However there equal ages, so we want to get map o
     // Got {8 -> [stan, kyle, kenny], 9 -> [eric], 35 -> [randy]}
 ```
 
-And finally, we want to build mapping characters name to surname:
+And finally, we want to build mapping from name to surname:
 
 ```java
 
@@ -82,7 +83,7 @@ And finally, we want to build mapping characters name to surname:
 
 ## Restrictions
 
-Since library uses cglib there are some restrictions on target entity class:
+Since library uses cglib there are some restrictions on the target entity class:
 * It should not be final
 * It should have default constructor
 * Fields should have getters
