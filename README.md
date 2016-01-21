@@ -92,8 +92,34 @@ Since library uses cglib there are some restrictions on the target entity class:
 
 ```java
     
-    //Collect
-    List<String> names = characters.stream().map(Person::getName).collect(Collectors.toList());
-    //GroupBy
-    Map<String, List<Person>> personByName = characters.stream().collect(Collectors.groupingBy(Person::getName));
+     //Collect
+        List<String> names = characters.stream().map(Person::getName).collect(Collectors.toList());
+        System.out.println("names: "+ names);
+        //Group
+        Map<String, Person> personByName = characters.stream().collect(Collectors.toMap(Person::getName, Function.<Person>identity()));
+        System.out.println("personByName: "+personByName);
+        //GroupToList
+        Map<String, List<Person>> personsByName = characters.stream().collect(Collectors.groupingBy(Person::getName));
+        System.out.println("personsByName: " + personsByName);
+        //Map
+        Map<String, String> surnameByName = characters.stream().collect(Collectors.toMap(Person::getName, Person::getSurname));
+        System.out.println("Surname by name: "+surnameByName);
+```
+
+## Groovy analogs
+
+```groovyy
+    
+ //Collect
+ List<String> names = characters.collect { it.name }
+ println "names: $names"
+ //Group
+ Map<String, String> personByName = characters.collectEntries{[it.name, it]}
+ println "personByName: $personByName"
+ //GroupToList
+ Map<String, List<Person>> personsByName = characters.groupBy { it.name }
+ println "personsByName: $personsByName"
+ //Map
+ Map<String, String> surnameByName = characters.collectEntries{[it.name, it.surname]}
+ println "surnameByName: $surnameByName"
 ```
