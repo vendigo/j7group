@@ -29,6 +29,10 @@ public final class J7Group {
         return checkUniqueness(in);
     }
 
+    public static <T> List<T> collect(Collection<T> from, boolean predicate) {
+
+    }
+
     /**
      * Collects values of some field to list.
      * Usage example: {@code collectToListFrom(persons, field(Person.class).getName())}

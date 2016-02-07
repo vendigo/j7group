@@ -6,6 +6,7 @@ import java.util.Collection;
 
 import static com.github.vendigo.j7group.ProxyHelper.interceptAsFirstArgument;
 import static com.github.vendigo.j7group.ProxyHelper.interceptAsSecondArgument;
+import static com.github.vendigo.j7group.ProxyHelper.setCalledPreposition;
 
 /**
  * Key words for DSL like constructions
@@ -13,6 +14,10 @@ import static com.github.vendigo.j7group.ProxyHelper.interceptAsSecondArgument;
  */
 public class J7GroupPrepositions {
     private J7GroupPrepositions() {
+    }
+
+    enum Preposition {
+        FIELD, BY, FROM, TO, WHEN_TRUE, WHEN_FALSE
     }
 
     /**
@@ -26,6 +31,7 @@ public class J7GroupPrepositions {
      * @param <T> - type of given entity
      */
     public static <T> T field(Class<T> entityClass) {
+        setCalledPreposition(Preposition.FIELD);
         return interceptAsFirstArgument(entityClass);
     }
 
@@ -41,6 +47,7 @@ public class J7GroupPrepositions {
      * @param <T> - type of given entity
      */
     public static <T> T by(Class<T> entityClass) {
+        setCalledPreposition(Preposition.BY);
         return interceptAsFirstArgument(entityClass);
     }
 
@@ -56,6 +63,7 @@ public class J7GroupPrepositions {
      * @param <T> - type of given entity
      */
     public static <T> T from(Class<T> entityClass) {
+        setCalledPreposition(Preposition.FROM);
         return interceptAsFirstArgument(entityClass);
     }
 
@@ -71,6 +79,17 @@ public class J7GroupPrepositions {
      * @param <T> - type of given entity
      */
     public static <T> T to(Class<T> entityClass) {
+        setCalledPreposition(Preposition.TO);
         return interceptAsSecondArgument(entityClass);
+    }
+
+    public static <T> T whenTrue(Class<T> entityClass) {
+        setCalledPreposition(Preposition.WHEN_TRUE);
+        return interceptAsFirstArgument(entityClass);
+    }
+
+    public static <T> T whenFalse(Class<T> entityClass) {
+        setCalledPreposition(Preposition.WHEN_FALSE);
+        return interceptAsFirstArgument(entityClass);
     }
 }

@@ -9,7 +9,17 @@ import java.lang.reflect.Method;
 class ProxyHelper {
     private final static ThreadLocal<Method> firstCalledMethod = new ThreadLocal<>();
     private final static ThreadLocal<Method> secondCalledMethod = new ThreadLocal<>();
+    private final static ThreadLocal<J7GroupPrepositions.Preposition> calledPreposition = new ThreadLocal<>();
+
     private ProxyHelper() {
+    }
+
+    static void setCalledPreposition(J7GroupPrepositions.Preposition preposition) {
+        calledPreposition.set(preposition);
+    }
+
+    public static J7GroupPrepositions.Preposition getCalledPreposition() {
+        return calledPreposition.get();
     }
 
     static <T> T interceptAsFirstArgument(Class<T> entityClass) {

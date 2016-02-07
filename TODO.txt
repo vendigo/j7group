@@ -1,0 +1,6 @@
+1) Write predicates implementation
+2) Write tests
+3) Refactoring, adjust generic methods
+4) Add checks on called methods
+5) Write JavaDocs
+6) README.md more descriptions, examples.

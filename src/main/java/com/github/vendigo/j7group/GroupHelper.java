@@ -36,6 +36,24 @@ class GroupHelper {
         return collected;
     }
 
+    static <T> List<T> collectWithPredicate(Collection<T> from) {
+        List<T> collected = new ArrayList<>();
+
+        boolean desiredValue = extractDesiredValue();
+
+        for (T entry : from) {
+            if (desiredValue == (Boolean)extractFirstArgument(entry)) {
+                collected
+                //TODO Complete
+            }
+        }
+    }
+
+    private static boolean extractDesiredValue() {
+        J7GroupPrepositions.Preposition calledPreposition = ProxyHelper.getCalledPreposition();
+        return calledPreposition.equals(J7GroupPrepositions.Preposition.WHEN_TRUE);
+    }
+
     static <K, V, C, T> Map<K, C> genericGroup(Collection<T> collection, GroupStrategy<K, V, C> groupStrategy,
                                                ValueExtractor<T, V> valueExtractor) {
         Map<K, C> resultMap = new HashMap<>();

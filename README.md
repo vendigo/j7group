@@ -2,6 +2,9 @@
 ## Description
 J7Group is a small open source Java library which provide convenient, DSL like, and type safe way for manipulation with collections.
  It allows to perform such operations as **collect**, **groupBy** and **map** without lyambda expressions (e.g. in Java 7 and below.)
+
+## Credits
+Inspired by [Mockito](http://mockito.org/) 
  
 ## Usage
 Lets say, we have class Person:
@@ -88,38 +91,41 @@ Since library uses cglib there are some restrictions on the target entity class:
 * It should have default constructor
 * Fields should have getters
 
-## Java 8 analogs
+## Analogs
 
 ```java
     
-     //Collect
-        List<String> names = characters.stream().map(Person::getName).collect(Collectors.toList());
-        System.out.println("names: "+ names);
-        //Group
-        Map<String, Person> personByName = characters.stream().collect(Collectors.toMap(Person::getName, Function.<Person>identity()));
-        System.out.println("personByName: "+personByName);
-        //GroupToList
-        Map<String, List<Person>> personsByName = characters.stream().collect(Collectors.groupingBy(Person::getName));
-        System.out.println("personsByName: " + personsByName);
-        //Map
-        Map<String, String> surnameByName = characters.stream().collect(Collectors.toMap(Person::getName, Person::getSurname));
-        System.out.println("Surname by name: "+surnameByName);
-```
-
-## Groovy analogs
-
-```groovyy
-    
- //Collect
- List<String> names = characters.collect { it.name }
- println "names: $names"
- //Group
- Map<String, String> personByName = characters.collectEntries{[it.name, it]}
- println "personByName: $personByName"
- //GroupToList
- Map<String, List<Person>> personsByName = characters.groupBy { it.name }
- println "personsByName: $personsByName"
- //Map
- Map<String, String> surnameByName = characters.collectEntries{[it.name, it.surname]}
- println "surnameByName: $surnameByName"
+     // Collect
+        // j7Group
+        collectToListFrom(characters, field(Person.class).getName());     
+        // Java 8   
+        characters.stream().map(Person::getName).collect(Collectors.toList());
+        // Groovy
+        characters.collect { it.name }
+        
+     // GroupBy
+        // j7Group
+        group(characters, by(Person.class).getName());
+        // Java 8
+        characters.stream().collect(Collectors.toMap(Person::getName, Function.<Person>identity()));
+        // Groovy
+        characters.collectEntries{[it.name, it]}
+     
+     // GroupBy to Lists   
+        // j7Group
+        groupToLists(characters, by(Person.class).getAge());       
+        // Java 8
+        characters.stream().collect(Collectors.groupingBy(Person::getAge));
+        // Groovy
+        characters.groupBy { it.name }
+        
+        
+     // Map
+        // j7Group     
+        map(characters, from(Person.class).getName(), to(Person.class).getSurname());
+        // Java 8
+        characters.stream().collect(Collectors.toMap(Person::getName, Person::getSurname));
+        // Groovy
+        characters.collectEntries{[it.name, it.surname]}
+        
 ```
