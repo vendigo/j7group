@@ -43,15 +43,23 @@ class GroupHelper {
 
         for (T entry : from) {
             if (desiredValue == (Boolean)extractFirstArgument(entry)) {
-                collected
-                //TODO Complete
+                collected.add(entry);
             }
         }
+        return collected;
     }
 
     private static boolean extractDesiredValue() {
         J7GroupPrepositions.Preposition calledPreposition = ProxyHelper.getCalledPreposition();
-        return calledPreposition.equals(J7GroupPrepositions.Preposition.WHEN_TRUE);
+        switch (calledPreposition) {
+            case WHEN_TRUE:
+                return true;
+            case WHEN_FALSE:
+                return false;
+            default:
+                throw new IllegalPrepositionException("Not allowed preposition was used");
+
+        }
     }
 
     static <K, V, C, T> Map<K, C> genericGroup(Collection<T> collection, GroupStrategy<K, V, C> groupStrategy,

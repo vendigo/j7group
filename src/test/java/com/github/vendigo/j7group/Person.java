@@ -4,6 +4,7 @@ public class Person {
     private String name;
     private String surname;
     private int age;
+    private boolean adult;
 
     public Person() {
     }
@@ -12,6 +13,7 @@ public class Person {
         this.name = name;
         this.surname = surname;
         this.age = age;
+        this.adult = age >= 18;
     }
 
     public String getName() {
@@ -24,6 +26,10 @@ public class Person {
 
     public int getAge() {
         return age;
+    }
+
+    public boolean isAdult() {
+        return adult;
     }
 
     @Override

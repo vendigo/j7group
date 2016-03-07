@@ -234,4 +234,13 @@ public class J7GroupTest {
                 hasEntry(8, TestCollections.setOf("Stan", "Kyle"))
         ));
     }
+
+    @Test
+    public void testCollectWithPredicate() throws Exception {
+        List<Person> adults = collect(Arrays.asList(petro, vinsent, stan, stan, boris, kyle),
+                whenTrue(Person.class).isAdult());
+
+        assertThat(adults, hasSize(2));
+        assertThat(adults, hasItems(boris, vinsent));
+    }
 }

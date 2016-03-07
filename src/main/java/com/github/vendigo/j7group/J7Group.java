@@ -30,7 +30,7 @@ public final class J7Group {
     }
 
     public static <T> List<T> collect(Collection<T> from, boolean predicate) {
-
+        return collectWithPredicate(from);
     }
 
     /**
