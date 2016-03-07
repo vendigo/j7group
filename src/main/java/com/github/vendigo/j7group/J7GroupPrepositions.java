@@ -4,9 +4,7 @@ import com.github.vendigo.j7group.key.ambiguity.KeyAmbiguityPolicy;
 
 import java.util.Collection;
 
-import static com.github.vendigo.j7group.ProxyHelper.interceptAsFirstArgument;
-import static com.github.vendigo.j7group.ProxyHelper.interceptAsSecondArgument;
-import static com.github.vendigo.j7group.ProxyHelper.setCalledPreposition;
+import static com.github.vendigo.j7group.ProxyHelper.*;
 
 /**
  * Key words for DSL like constructions
@@ -31,7 +29,7 @@ public class J7GroupPrepositions {
      * @param <T> - type of given entity
      */
     public static <T> T field(Class<T> entityClass) {
-        setCalledPreposition(Preposition.FIELD);
+        addCalledPreposition(Preposition.FIELD);
         return interceptAsFirstArgument(entityClass);
     }
 
@@ -47,7 +45,7 @@ public class J7GroupPrepositions {
      * @param <T> - type of given entity
      */
     public static <T> T by(Class<T> entityClass) {
-        setCalledPreposition(Preposition.BY);
+        addCalledPreposition(Preposition.BY);
         return interceptAsFirstArgument(entityClass);
     }
 
@@ -63,7 +61,7 @@ public class J7GroupPrepositions {
      * @param <T> - type of given entity
      */
     public static <T> T from(Class<T> entityClass) {
-        setCalledPreposition(Preposition.FROM);
+        addCalledPreposition(Preposition.FROM);
         return interceptAsFirstArgument(entityClass);
     }
 
@@ -79,17 +77,17 @@ public class J7GroupPrepositions {
      * @param <T> - type of given entity
      */
     public static <T> T to(Class<T> entityClass) {
-        setCalledPreposition(Preposition.TO);
+        addCalledPreposition(Preposition.TO);
         return interceptAsSecondArgument(entityClass);
     }
 
     public static <T> T whenTrue(Class<T> entityClass) {
-        setCalledPreposition(Preposition.WHEN_TRUE);
+        addCalledPreposition(Preposition.WHEN_TRUE);
         return interceptAsFirstArgument(entityClass);
     }
 
     public static <T> T whenFalse(Class<T> entityClass) {
-        setCalledPreposition(Preposition.WHEN_FALSE);
+        addCalledPreposition(Preposition.WHEN_FALSE);
         return interceptAsFirstArgument(entityClass);
     }
 }

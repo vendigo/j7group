@@ -4,7 +4,7 @@ import com.github.vendigo.j7group.key.ambiguity.KeyAmbiguityPolicy;
 
 import java.util.*;
 
-import static com.github.vendigo.j7group.ProxyHelper.extractFirstArgument;
+import static com.github.vendigo.j7group.ProxyHelper.*;
 
 class GroupHelper {
     static final int DEFAULT_CAPACITY = 10;
@@ -13,6 +13,9 @@ class GroupHelper {
     }
 
     static <T, V> boolean checkUniqueness(Collection<T> in) {
+        checkPreposition(J7GroupPrepositions.Preposition.FIELD, 1);
+        clearCalledPrepositions();
+
         Set<V> uniqueElements = new HashSet<>();
 
         for (T entity : in) {
@@ -24,9 +27,18 @@ class GroupHelper {
         return true;
     }
 
+    private static void checkPreposition(J7GroupPrepositions.Preposition field, int index) {
+        J7GroupPrepositions.Preposition calledPreposition = getCalledPreposition(index);
+        if (!field.equals(calledPreposition)) {
+            throw new IllegalPrepositionException("Not allowed preposition used. Expected preposition: "+field.toString());
+        }
+    }
+
     @SuppressWarnings("ConstantConditions")
     static <T, V> Collection<V> genericCollect(Collection<T> from, Class<? extends Collection> collectionClass,
                                                int initialCapacity) {
+        checkPreposition(J7GroupPrepositions.Preposition.FIELD, 1);
+        clearCalledPrepositions();
         Collection<V> collected = createCollectionInstance(collectionClass, initialCapacity);
 
         for (T entity : from) {
@@ -37,10 +49,10 @@ class GroupHelper {
     }
 
     static <T> List<T> collectWithPredicate(Collection<T> from) {
-        List<T> collected = new ArrayList<>();
-
         boolean desiredValue = extractDesiredValue();
+        clearCalledPrepositions();
 
+        List<T> collected = new ArrayList<>();
         for (T entry : from) {
             if (desiredValue == (Boolean)extractFirstArgument(entry)) {
                 collected.add(entry);
@@ -50,14 +62,15 @@ class GroupHelper {
     }
 
     private static boolean extractDesiredValue() {
-        J7GroupPrepositions.Preposition calledPreposition = ProxyHelper.getCalledPreposition();
+        J7GroupPrepositions.Preposition calledPreposition = ProxyHelper.getCalledPreposition(1);
         switch (calledPreposition) {
             case WHEN_TRUE:
                 return true;
             case WHEN_FALSE:
                 return false;
             default:
-                throw new IllegalPrepositionException("Not allowed preposition was used");
+                throw new IllegalPrepositionException("Not allowed preposition was used. " +
+                        "Expected prepositions: WHEN_TRUE, WHEN_FALSE");
 
         }
     }

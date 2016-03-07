@@ -5,21 +5,26 @@ import net.sf.cglib.proxy.MethodInterceptor;
 import net.sf.cglib.proxy.MethodProxy;
 
 import java.lang.reflect.Method;
+import java.util.List;
 
 class ProxyHelper {
     private final static ThreadLocal<Method> firstCalledMethod = new ThreadLocal<>();
     private final static ThreadLocal<Method> secondCalledMethod = new ThreadLocal<>();
-    private final static ThreadLocal<J7GroupPrepositions.Preposition> calledPreposition = new ThreadLocal<>();
+    private final static ThreadLocal<List<J7GroupPrepositions.Preposition>> calledPrepositions = new ThreadLocal<>();
 
     private ProxyHelper() {
     }
 
-    static void setCalledPreposition(J7GroupPrepositions.Preposition preposition) {
-        calledPreposition.set(preposition);
+    static void addCalledPreposition(J7GroupPrepositions.Preposition preposition) {
+        calledPrepositions.get().add(preposition);
     }
 
-    public static J7GroupPrepositions.Preposition getCalledPreposition() {
-        return calledPreposition.get();
+    static J7GroupPrepositions.Preposition getCalledPreposition(int index) {
+        return calledPrepositions.get().get(index);
+    }
+
+    static void clearCalledPrepositions() {
+        calledPrepositions.get().clear();
     }
 
     static <T> T interceptAsFirstArgument(Class<T> entityClass) {

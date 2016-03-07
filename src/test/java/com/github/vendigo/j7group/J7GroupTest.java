@@ -37,6 +37,11 @@ public class J7GroupTest {
         assertThat(result, is(false));
     }
 
+    @Test(expected = IllegalPrepositionException.class)
+    public void testIsUniqueIllegalPreposition() throws Exception {
+        isUniqueIn(Arrays.asList(petro, boris, vinsent, stan, kyle), from(Person.class).getAge());
+    }
+
     @Test
     public void testCollectNamesToList() throws Exception {
         List<String> result = collectToListFrom(Arrays.asList(petro, boris, vinsent), field(Person.class).getName());
@@ -52,6 +57,12 @@ public class J7GroupTest {
 
         assertThat(result, hasSize(5));
         assertThat(result, hasItems(17, 47, 50, 8, 8));
+    }
+
+    @Test(expected = IllegalPrepositionException.class)
+    public void testCollectToListIllegalPreposition() throws Exception {
+        collectToListFrom(Arrays.asList(petro, boris, vinsent, kyle, stan),
+                to(Person.class).getAge());
     }
 
     @Test
@@ -88,10 +99,10 @@ public class J7GroupTest {
         Map<Integer, Person> result = group(Arrays.asList(petro, boris, vinsent), by(Person.class).getAge());
 
         assertThat(result, allOf(
-                        hasEntry(17, petro),
-                        hasEntry(47, boris),
-                        hasEntry(50, vinsent)
-                ));
+                hasEntry(17, petro),
+                hasEntry(47, boris),
+                hasEntry(50, vinsent)
+        ));
     }
 
     @Test
@@ -99,11 +110,11 @@ public class J7GroupTest {
         Map<Integer, Person> result = group(Arrays.asList(petro, boris, kyle, vinsent, stan), by(Person.class).getAge());
 
         assertThat(result, allOf(
-                        hasEntry(17, petro),
-                        hasEntry(47, boris),
-                        hasEntry(50, vinsent),
-                        hasEntry(8, stan)
-                ));
+                hasEntry(17, petro),
+                hasEntry(47, boris),
+                hasEntry(50, vinsent),
+                hasEntry(8, stan)
+        ));
     }
 
     @Test
@@ -131,11 +142,11 @@ public class J7GroupTest {
                 by(Person.class).getAge());
 
         assertThat(result, allOf(
-                        hasEntry(8, Arrays.asList(stan, stan, kyle)),
-                        hasEntry(17, Collections.singletonList(petro)),
-                        hasEntry(47, Collections.singletonList(boris)),
-                        hasEntry(50, Collections.singletonList(vinsent))
-                ));
+                hasEntry(8, Arrays.asList(stan, stan, kyle)),
+                hasEntry(17, Collections.singletonList(petro)),
+                hasEntry(47, Collections.singletonList(boris)),
+                hasEntry(50, Collections.singletonList(vinsent))
+        ));
     }
 
     @Test
@@ -144,11 +155,11 @@ public class J7GroupTest {
                 by(Person.class).getAge());
 
         assertThat(result, allOf(
-                        hasEntry(8, TestCollections.setOf(stan, kyle)),
-                        hasEntry(17, TestCollections.setOf(petro)),
-                        hasEntry(47, TestCollections.setOf(boris)),
-                        hasEntry(50, TestCollections.setOf(vinsent))
-                ));
+                hasEntry(8, TestCollections.setOf(stan, kyle)),
+                hasEntry(17, TestCollections.setOf(petro)),
+                hasEntry(47, TestCollections.setOf(boris)),
+                hasEntry(50, TestCollections.setOf(vinsent))
+        ));
     }
 
     @Test
@@ -157,10 +168,10 @@ public class J7GroupTest {
                 to(Person.class).getSurname());
 
         assertThat(result, allOf(
-                        hasEntry("Petro", "Pomagai"),
-                        hasEntry("Vinsent", "Vega"),
-                        hasEntry("Boris", "Britva")
-                ));
+                hasEntry("Petro", "Pomagai"),
+                hasEntry("Vinsent", "Vega"),
+                hasEntry("Boris", "Britva")
+        ));
     }
 
     @Test
@@ -169,10 +180,10 @@ public class J7GroupTest {
                 to(Person.class).getName());
 
         assertThat(result, allOf(
-                        hasEntry(17, "Petro"),
-                        hasEntry(50, "Vinsent"),
-                        hasEntry(47, "Boris")
-                ));
+                hasEntry(17, "Petro"),
+                hasEntry(50, "Vinsent"),
+                hasEntry(47, "Boris")
+        ));
     }
 
     @Test
@@ -181,11 +192,11 @@ public class J7GroupTest {
                 to(Person.class).getName());
 
         assertThat(result, allOf(
-                        hasEntry(17, "Petro"),
-                        hasEntry(50, "Vinsent"),
-                        hasEntry(47, "Boris"),
-                        hasEntry(8, "Kyle")
-                ));
+                hasEntry(17, "Petro"),
+                hasEntry(50, "Vinsent"),
+                hasEntry(47, "Boris"),
+                hasEntry(8, "Kyle")
+        ));
     }
 
     @Test
@@ -209,7 +220,7 @@ public class J7GroupTest {
 
     @Test
     public void testMapToListsAgeToName() throws Exception {
-        Map<Integer, List<String>> result = mapToLists(Arrays.asList(petro, vinsent, stan, stan, boris, kyle), 
+        Map<Integer, List<String>> result = mapToLists(Arrays.asList(petro, vinsent, stan, stan, boris, kyle),
                 from(Person.class).getAge(),
                 to(Person.class).getName());
 
@@ -236,11 +247,25 @@ public class J7GroupTest {
     }
 
     @Test
-    public void testCollectWithPredicate() throws Exception {
-        List<Person> adults = collect(Arrays.asList(petro, vinsent, stan, stan, boris, kyle),
+    public void testCollectWhenTrue() throws Exception {
+        List<Person> adults = collect(Arrays.asList(petro, vinsent, stan, boris, kyle),
                 whenTrue(Person.class).isAdult());
 
         assertThat(adults, hasSize(2));
         assertThat(adults, hasItems(boris, vinsent));
+    }
+
+    @Test
+    public void testCollectWhenFalse() throws Exception {
+        List<Person> adults = collect(Arrays.asList(petro, vinsent, stan, boris, kyle),
+                whenFalse(Person.class).isAdult());
+
+        assertThat(adults, hasSize(3));
+        assertThat(adults, hasItems(petro, stan, kyle));
+    }
+
+    @Test(expected = IllegalPrepositionException.class)
+    public void testCollectIllegalPreposition() throws Exception {
+        collect(Arrays.asList(petro, vinsent, stan, boris, kyle), field(Person.class).isAdult());
     }
 }
