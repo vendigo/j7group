@@ -85,7 +85,7 @@ public final class J7Group {
      */
     public static <K, T> Map<K, T> group(Collection<T> collection, K by, KeyAmbiguityPolicy keyAmbiguityPolicy) {
         GroupStrategy<K, T, T> groupStrategy = resolveGroupStrategy(keyAmbiguityPolicy);
-        return genericGroup(collection, groupStrategy, new EntityAsValueExtractor<T>());
+        return genericGroup(collection, groupStrategy, new EntityAsValueExtractor<T>(), J7GroupPrepositions.Preposition.BY);
     }
 
     /**
@@ -101,7 +101,7 @@ public final class J7Group {
     public static <K, T> Map<K, List<T>> groupToLists(Collection<T> collection, K by) {
         return genericGroup(collection, new ToCollectionGroupStrategy<K, T, List<T>>(ArrayList.class,
                         collection.size()),
-                new EntityAsValueExtractor<T>());
+                new EntityAsValueExtractor<T>(), J7GroupPrepositions.Preposition.BY);
     }
 
     /**
@@ -117,7 +117,7 @@ public final class J7Group {
     public static <K, T> Map<K, Set<T>> groupToSets(Collection<T> collection, K by) {
         return genericGroup(collection, new ToCollectionGroupStrategy<K, T, Set<T>>(HashSet.class,
                         collection.size()),
-                new EntityAsValueExtractor<T>());
+                new EntityAsValueExtractor<T>(), J7GroupPrepositions.Preposition.BY);
     }
 
     /**
@@ -150,7 +150,8 @@ public final class J7Group {
      */
     public static <K, V, T> Map<K, V> map(Collection<T> collection, K from, V to, KeyAmbiguityPolicy keyAmbiguityPolicy) {
         GroupStrategy<K, V, V> groupStrategy = resolveGroupStrategy(keyAmbiguityPolicy);
-        return genericGroup(collection, groupStrategy, new SecondArgumentValueExtractor<T, V>());
+        return genericGroup(collection, groupStrategy, new SecondArgumentValueExtractor<T, V>(),
+                J7GroupPrepositions.Preposition.FROM, J7GroupPrepositions.Preposition.TO);
     }
 
     /**
@@ -167,7 +168,8 @@ public final class J7Group {
      */
     public static <K, V, T> Map<K, List<V>> mapToLists(Collection<T> collection, K from, V to) {
         return genericGroup(collection, new ToCollectionGroupStrategy<K, V, List<V>>(ArrayList.class,
-                GroupHelper.DEFAULT_CAPACITY), new SecondArgumentValueExtractor<T, V>());
+                GroupHelper.DEFAULT_CAPACITY), new SecondArgumentValueExtractor<T, V>(),
+                J7GroupPrepositions.Preposition.FROM, J7GroupPrepositions.Preposition.TO);
     }
 
     /**
@@ -184,6 +186,7 @@ public final class J7Group {
      */
     public static <T, K, V> Map<K, Set<V>> mapToSets(Collection<T> collection, K from, V to) {
         return genericGroup(collection, new ToCollectionGroupStrategy<K, V, Set<V>>(HashSet.class,
-                GroupHelper.DEFAULT_CAPACITY), new SecondArgumentValueExtractor<T, V>());
+                GroupHelper.DEFAULT_CAPACITY), new SecondArgumentValueExtractor<T, V>(),
+                J7GroupPrepositions.Preposition.FROM, J7GroupPrepositions.Preposition.TO);
     }
 }

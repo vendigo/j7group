@@ -59,6 +59,13 @@ public class J7GroupTest {
         assertThat(result, hasItems(17, 47, 50, 8, 8));
     }
 
+    @Test
+    public void testCollectFromEmptyList() throws Exception {
+        List<String> result = collectToListFrom(Collections.emptyList(), field(Person.class).getName());
+
+        assertThat(result, emptyCollectionOf(String.class));
+    }
+
     @Test(expected = IllegalPrepositionException.class)
     public void testCollectToListIllegalPreposition() throws Exception {
         collectToListFrom(Arrays.asList(petro, boris, vinsent, kyle, stan),
@@ -74,11 +81,9 @@ public class J7GroupTest {
         assertThat(result, hasItems(17, 47, 50, 8));
     }
 
-    @Test
-    public void testCollectFromEmptyList() throws Exception {
-        List<String> result = collectToListFrom(Collections.emptyList(), field(Person.class).getName());
-
-        assertThat(result, emptyCollectionOf(String.class));
+    @Test(expected = IllegalPrepositionException.class)
+    public void testCollectToSetIllegalPreposition() throws Exception {
+        collectToSetFrom(Arrays.asList(petro, boris, vinsent, kyle, stan), from(Person.class).getAge());
     }
 
     @Test
@@ -136,6 +141,11 @@ public class J7GroupTest {
                 KeyAmbiguityPolicy.FAIL_FAST);
     }
 
+    @Test(expected = IllegalPrepositionException.class)
+    public void testGroupByIllegalPreposition() throws Exception {
+        group(Arrays.asList(petro, boris, kyle, vinsent, stan), to(Person.class).getAge());
+    }
+
     @Test
     public void testGroupToListsByAge() throws Exception {
         Map<Integer, List<Person>> result = groupToLists(Arrays.asList(petro, boris, stan, stan, vinsent, kyle),
@@ -149,6 +159,11 @@ public class J7GroupTest {
         ));
     }
 
+    @Test(expected = IllegalPrepositionException.class)
+    public void testGroupToListsIllegalPreposition() throws Exception {
+        groupToLists(Arrays.asList(petro, boris, stan, stan, vinsent, kyle), field(Person.class).getAge());
+    }
+
     @Test
     public void testGroupToSetsByAge() throws Exception {
         Map<Integer, Set<Person>> result = groupToSets(Arrays.asList(petro, boris, stan, stan, vinsent, kyle),
@@ -160,6 +175,11 @@ public class J7GroupTest {
                 hasEntry(47, TestCollections.setOf(boris)),
                 hasEntry(50, TestCollections.setOf(vinsent))
         ));
+    }
+
+    @Test(expected = IllegalPrepositionException.class)
+    public void testGroupToSetsIllegalPreposition() throws Exception {
+        groupToSets(Arrays.asList(petro, boris, stan, stan, vinsent, kyle), from(Person.class).getAge());
     }
 
     @Test
@@ -218,6 +238,16 @@ public class J7GroupTest {
                 to(Person.class).getName(), KeyAmbiguityPolicy.FAIL_FAST);
     }
 
+    @Test(expected = IllegalPrepositionException.class)
+    public void testMapIllegalPrepositionFrom() throws Exception {
+        map(Arrays.asList(petro, vinsent, stan, boris, kyle), field(Person.class).getAge(), to(Person.class).getName());
+    }
+
+    @Test(expected = IllegalPrepositionException.class)
+    public void testMapIllegalPrepositionTo() throws Exception {
+        map(Arrays.asList(petro, vinsent, stan, boris, kyle), from(Person.class).getAge(), by(Person.class).getName());
+    }
+
     @Test
     public void testMapToListsAgeToName() throws Exception {
         Map<Integer, List<String>> result = mapToLists(Arrays.asList(petro, vinsent, stan, stan, boris, kyle),
@@ -232,6 +262,16 @@ public class J7GroupTest {
         ));
     }
 
+    @Test(expected = IllegalPrepositionException.class)
+    public void testMapToListsIllegalPrepositionFrom() throws Exception {
+        mapToLists(Arrays.asList(petro, vinsent, stan, boris, kyle), field(Person.class).getAge(), to(Person.class).getName());
+    }
+
+    @Test(expected = IllegalPrepositionException.class)
+    public void testMapToListsIllegalPrepositionTo() throws Exception {
+        mapToLists(Arrays.asList(petro, vinsent, stan, boris, kyle), from(Person.class).getAge(), by(Person.class).getName());
+    }
+
     @Test
     public void testMapToSetsAgeToName() throws Exception {
         Map<Integer, Set<String>> result = mapToSets(Arrays.asList(petro, vinsent, stan, stan, boris, kyle),
@@ -244,6 +284,16 @@ public class J7GroupTest {
                 hasEntry(47, TestCollections.setOf("Boris")),
                 hasEntry(8, TestCollections.setOf("Stan", "Kyle"))
         ));
+    }
+
+    @Test(expected = IllegalPrepositionException.class)
+    public void testMapToSetsIllegalPrepositionFrom() throws Exception {
+        mapToSets(Arrays.asList(petro, vinsent, stan, boris, kyle), field(Person.class).getAge(), to(Person.class).getName());
+    }
+
+    @Test(expected = IllegalPrepositionException.class)
+    public void testMapToSetsIllegalPrepositionTo() throws Exception {
+        mapToSets(Arrays.asList(petro, vinsent, stan, boris, kyle), from(Person.class).getAge(), by(Person.class).getName());
     }
 
     @Test

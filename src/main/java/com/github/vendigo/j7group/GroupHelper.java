@@ -8,13 +8,31 @@ import static com.github.vendigo.j7group.ProxyHelper.*;
 
 class GroupHelper {
     static final int DEFAULT_CAPACITY = 10;
+    public static final int FIRST_PREPOSITION_INDEX = 0;
 
     private GroupHelper() {
     }
 
+    private static void checkPrepositions(J7GroupPrepositions.Preposition... prepositions) {
+        try {
+            for (int i = 0; i < prepositions.length; i++) {
+                checkPreposition(prepositions[i], i);
+            }
+        } finally {
+            clearCalledPrepositions();
+        }
+    }
+
+    private static void checkPreposition(J7GroupPrepositions.Preposition preposition, int index) {
+        J7GroupPrepositions.Preposition calledPreposition = getCalledPreposition(index);
+        if (!preposition.equals(calledPreposition)) {
+            throw new IllegalPrepositionException("Not allowed preposition used. Expected preposition: " + preposition +
+                    " Actual preposition: " + calledPreposition);
+        }
+    }
+
     static <T, V> boolean checkUniqueness(Collection<T> in) {
-        checkPreposition(J7GroupPrepositions.Preposition.FIELD, 1);
-        clearCalledPrepositions();
+        checkPrepositions(J7GroupPrepositions.Preposition.FIELD);
 
         Set<V> uniqueElements = new HashSet<>();
 
@@ -27,18 +45,10 @@ class GroupHelper {
         return true;
     }
 
-    private static void checkPreposition(J7GroupPrepositions.Preposition field, int index) {
-        J7GroupPrepositions.Preposition calledPreposition = getCalledPreposition(index);
-        if (!field.equals(calledPreposition)) {
-            throw new IllegalPrepositionException("Not allowed preposition used. Expected preposition: "+field.toString());
-        }
-    }
-
     @SuppressWarnings("ConstantConditions")
     static <T, V> Collection<V> genericCollect(Collection<T> from, Class<? extends Collection> collectionClass,
                                                int initialCapacity) {
-        checkPreposition(J7GroupPrepositions.Preposition.FIELD, 1);
-        clearCalledPrepositions();
+        checkPrepositions(J7GroupPrepositions.Preposition.FIELD);
         Collection<V> collected = createCollectionInstance(collectionClass, initialCapacity);
 
         for (T entity : from) {
@@ -50,33 +60,40 @@ class GroupHelper {
 
     static <T> List<T> collectWithPredicate(Collection<T> from) {
         boolean desiredValue = extractDesiredValue();
-        clearCalledPrepositions();
 
         List<T> collected = new ArrayList<>();
         for (T entry : from) {
-            if (desiredValue == (Boolean)extractFirstArgument(entry)) {
+            if (desiredValue == (Boolean) extractFirstArgument(entry)) {
                 collected.add(entry);
             }
         }
+
         return collected;
     }
 
     private static boolean extractDesiredValue() {
-        J7GroupPrepositions.Preposition calledPreposition = ProxyHelper.getCalledPreposition(1);
-        switch (calledPreposition) {
-            case WHEN_TRUE:
-                return true;
-            case WHEN_FALSE:
-                return false;
-            default:
-                throw new IllegalPrepositionException("Not allowed preposition was used. " +
-                        "Expected prepositions: WHEN_TRUE, WHEN_FALSE");
+        J7GroupPrepositions.Preposition calledPreposition = ProxyHelper.getCalledPreposition(FIRST_PREPOSITION_INDEX);
+        try {
+            switch (calledPreposition) {
+                case WHEN_TRUE:
+                    return true;
+                case WHEN_FALSE:
+                    return false;
+                default:
+                    throw new IllegalPrepositionException("Not allowed preposition was used. " +
+                            "Expected prepositions: WHEN_TRUE, WHEN_FALSE. Actual preposition: " + calledPreposition);
 
+            }
+        } finally {
+            clearCalledPrepositions();
         }
     }
 
     static <K, V, C, T> Map<K, C> genericGroup(Collection<T> collection, GroupStrategy<K, V, C> groupStrategy,
-                                               ValueExtractor<T, V> valueExtractor) {
+                                               ValueExtractor<T, V> valueExtractor,
+                                               J7GroupPrepositions.Preposition... expectedPrepositions) {
+        checkPrepositions(expectedPrepositions);
+        clearCalledPrepositions();
         Map<K, C> resultMap = new HashMap<>();
 
         for (T entity : collection) {

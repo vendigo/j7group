@@ -5,12 +5,17 @@ import net.sf.cglib.proxy.MethodInterceptor;
 import net.sf.cglib.proxy.MethodProxy;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.List;
 
 class ProxyHelper {
     private final static ThreadLocal<Method> firstCalledMethod = new ThreadLocal<>();
     private final static ThreadLocal<Method> secondCalledMethod = new ThreadLocal<>();
     private final static ThreadLocal<List<J7GroupPrepositions.Preposition>> calledPrepositions = new ThreadLocal<>();
+
+    static {
+        calledPrepositions.set(new ArrayList<J7GroupPrepositions.Preposition>(2));
+    }
 
     private ProxyHelper() {
     }
@@ -24,7 +29,7 @@ class ProxyHelper {
     }
 
     static void clearCalledPrepositions() {
-        calledPrepositions.get().clear();
+        calledPrepositions.set(new ArrayList<J7GroupPrepositions.Preposition>(2));
     }
 
     static <T> T interceptAsFirstArgument(Class<T> entityClass) {
