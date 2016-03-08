@@ -29,6 +29,14 @@ public final class J7Group {
         return checkUniqueness(in);
     }
 
+    /**
+     * Collects elements from collection by some boolean field.
+     * Usage example: {@code collect(persons, whenTrue(Person.class).isAdult())}
+     * @param from - collection to collect elements from
+     * @param predicate placeholder for "whenTrue" or "whenFalse" construction
+     * @param <T> - type of collection
+     * @return new List with collected elements
+     */
     public static <T> List<T> collect(Collection<T> from, boolean predicate) {
         return collectWithPredicate(from);
     }

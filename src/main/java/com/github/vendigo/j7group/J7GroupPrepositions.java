@@ -19,7 +19,7 @@ public class J7GroupPrepositions {
     }
 
     /**
-     * Using as second argument in:
+     * Used as second argument in:
      * <ul>
      * <li>{@link J7Group#isUniqueIn(Collection, Object)}</li>
      * <li>{@link J7Group#collectToListFrom(Collection, Object)}</li>
@@ -34,7 +34,7 @@ public class J7GroupPrepositions {
     }
 
     /**
-     * Using as second argument in:
+     * Used as second argument in:
      * <ul>
      * <li>{@link J7Group#group(Collection, Object)}</li>
      * <li>{@link J7Group#group(Collection, Object, KeyAmbiguityPolicy)}</li>
@@ -50,7 +50,7 @@ public class J7GroupPrepositions {
     }
 
     /**
-     * Using as second argument in:
+     * Used as second argument in:
      * <ul>
      * <li>{@link J7Group#map(Collection, Object, Object)}</li>
      * <li>{@link J7Group#map(Collection, Object, Object, KeyAmbiguityPolicy)}</li>
@@ -66,7 +66,7 @@ public class J7GroupPrepositions {
     }
 
     /**
-     * Using as third argument in:
+     * Used as third argument in:
      * <ul>
      * <li>{@link J7Group#map(Collection, Object, Object)}</li>
      * <li>{@link J7Group#map(Collection, Object, Object, KeyAmbiguityPolicy)}</li>
@@ -81,11 +81,23 @@ public class J7GroupPrepositions {
         return interceptAsSecondArgument(entityClass);
     }
 
+    /**
+     * Used as second argument in:
+     * {@link J7Group#collect(Collection, boolean)}
+     * @param entityClass - class of target entity
+     * @param <T> - type of collected entity
+     */
     public static <T> T whenTrue(Class<T> entityClass) {
         addCalledPreposition(Preposition.WHEN_TRUE);
         return interceptAsFirstArgument(entityClass);
     }
 
+    /**
+     * Used as second argument in:
+     * {@link J7Group#collect(Collection, boolean)}
+     * @param entityClass - class of target entity
+     * @param <T> - type of collected entity
+     */
     public static <T> T whenFalse(Class<T> entityClass) {
         addCalledPreposition(Preposition.WHEN_FALSE);
         return interceptAsFirstArgument(entityClass);
