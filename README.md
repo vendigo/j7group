@@ -1,12 +1,15 @@
 # J7Group
 ## Description
 J7Group is a small open source Java library which provide convenient, DSL like, and type safe way for manipulation with collections.
- It allows to perform such operations as **collect**, **groupBy** and **map** without lyambda expressions (e.g. in Java 7 and below.)
+It allows to perform such operations as **collect**, **groupBy**, **filter** and **map** without lyambda expressions (e.g. in Java 7 and below.)
+For detailed documentation check Javadoc of [J7Group.java](https://github.com/vendigo/j7group/blob/master/src/main/java/com/github/vendigo/j7group/J7Group.java). 
+To see all possible use cases check [J7GroupTest.java](https://github.com/vendigo/j7group/blob/master/src/test/java/com/github/vendigo/j7group/J7GroupTest.java).
+
 
 ## Credits
 Inspired by [Mockito](http://mockito.org/) 
  
-## Usage
+## Usage examples
 Lets say, we have class Person:
 
 ```java
@@ -36,6 +39,11 @@ Lets say, we have class Person:
         public int getAge() {
             return age;
         }
+        
+        public boolean isAdult() {
+            return age >= 18;
+        }
+        
         }
 ```
 
@@ -49,7 +57,7 @@ And somewhere else:
     Person kenny = new Person("Kenny", "McCormick", 8);
     Person randy = new Person("Randy", "Marsh", 35);
     
-    List<Person> characters = Arrays.asList(stan, kyle, eric, kenny, randy);
+    List<Person> characters = listOf(stan, kyle, eric, kenny, randy);
 ```
  
 Now we want to collect all names:
@@ -60,7 +68,7 @@ Now we want to collect all names:
     // Got ["Stan", "Kyle", "Eric", "Kenny", "Randy"]
 ```
 
-Or to group characters by name:
+Group characters by name:
 
 ```java
 
@@ -68,7 +76,7 @@ Or to group characters by name:
     // Got {"Stan" -> stan, "Kyle" -> kyle, "Eric" -> eric, "Kenny" -> kenny, "Randy" -> randy}
 ```
 
-Or to group characters by age. However there are equal ages, so we want to get map of lists:
+Group characters by age. However there are equal ages, so we want to get map of lists:
 
 ```java
 
@@ -76,12 +84,26 @@ Or to group characters by age. However there are equal ages, so we want to get m
     // Got {8 -> [stan, kyle, kenny], 9 -> [eric], 35 -> [randy]}
 ```
 
-And finally, we want to build mapping from name to surname:
+Build mapping from name to surname:
 
 ```java
 
     Map<String, String> nameToSurname = map(characters, from(Person.class).getName(), to(Person.class).getSurname());
     // Got {"Stan" -> "Marsh", "Kyle" -> "Broflovski", "Eric" -> "Cartman", "Kenny" -> "McCormick", "Randy" -> "Marsh"}
+```
+
+Collect all adults:
+
+```java
+    List<Person> adults = collect(characters, whenFalse(Person.class).isAdult());
+    // Got [randy]
+```
+
+Remove all adults from the collection:
+
+```java
+    removeFrom(characters, whenTrue(Person.class).isAdult());
+    // Got in characters [stan, kyle, eric, kenny]
 ```
 
 ## Restrictions
@@ -95,13 +117,21 @@ Since library uses cglib there are some restrictions on the target entity class:
 
 ```java
     
-     // Collect
+     // Collect field
         // j7Group
         collectToListFrom(characters, field(Person.class).getName());     
         // Java 8   
         characters.stream().map(Person::getName).collect(Collectors.toList());
         // Groovy
         characters.collect { it.name }
+        
+    // Collect with predicate
+        // j7Group
+        collect(characters, whenTrue(Person.class).isAdult());
+        // Java 8
+        characters.stream().filter(Person::isAdult).collect(Collectors.toList());
+        // Groovy
+        characters.findAll { it.isAdult()}
         
      // GroupBy
         // j7Group
@@ -118,7 +148,6 @@ Since library uses cglib there are some restrictions on the target entity class:
         characters.stream().collect(Collectors.groupingBy(Person::getAge));
         // Groovy
         characters.groupBy { it.name }
-        
         
      // Map
         // j7Group     

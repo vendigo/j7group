@@ -16,6 +16,7 @@ import static org.hamcrest.core.AllOf.allOf;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsCollectionContaining.hasItems;
 
+@SuppressWarnings("Duplicates")
 public class J7GroupTest {
     private final Person petro = new Person("Petro", "Pomagai", 17);
     private final Person stan = new Person("Stan", "Marsh", 8);
@@ -317,5 +318,32 @@ public class J7GroupTest {
     @Test(expected = IllegalPrepositionException.class)
     public void testCollectIllegalPreposition() throws Exception {
         collect(Arrays.asList(petro, vinsent, stan, boris, kyle), field(Person.class).isAdult());
+    }
+
+    @Test
+    public void testRemoveFromWhenTrue() throws Exception {
+        List<Person> persons = new ArrayList<>();
+        persons.addAll(Arrays.asList(petro, vinsent, stan, boris, kyle));
+        removeFrom(persons, whenTrue(Person.class).isAdult());
+
+        assertThat(persons, hasSize(3));
+        assertThat(persons, hasItems(petro, stan, kyle));
+    }
+
+    @Test
+    public void testRemoveFromWhenFalse() throws Exception {
+        List<Person> persons = new ArrayList<>();
+        persons.addAll(Arrays.asList(petro, vinsent, stan, boris, kyle));
+        removeFrom(persons, whenFalse(Person.class).isAdult());
+
+        assertThat(persons, hasSize(2));
+        assertThat(persons, hasItems(vinsent, boris));
+    }
+
+    @Test(expected = IllegalPrepositionException.class)
+    public void testRemoveFromIllegalPreposition() throws Exception {
+        List<Person> persons = new ArrayList<>();
+        persons.addAll(Arrays.asList(petro, vinsent, stan, boris, kyle));
+        removeFrom(persons, by(Person.class).isAdult());
     }
 }

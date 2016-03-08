@@ -71,6 +71,19 @@ class GroupHelper {
         return collected;
     }
 
+    static <T> Collection<T> removeByPredicate(Collection<T> from) {
+        boolean desiredValue = extractDesiredValue();
+
+        Iterator<T> iterator = from.iterator();
+        while (iterator.hasNext()) {
+            T element = iterator.next();
+            if (desiredValue == (Boolean)extractFirstArgument(element)) {
+                iterator.remove();
+            }
+        }
+        return from;
+    }
+
     private static boolean extractDesiredValue() {
         J7GroupPrepositions.Preposition calledPreposition = ProxyHelper.getCalledPreposition(FIRST_PREPOSITION_INDEX);
         try {

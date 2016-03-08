@@ -197,4 +197,16 @@ public final class J7Group {
                 GroupHelper.DEFAULT_CAPACITY), new SecondArgumentValueExtractor<T, V>(),
                 J7GroupPrepositions.Preposition.FROM, J7GroupPrepositions.Preposition.TO);
     }
+
+    /**
+     * Removes elements from the collection by some boolean field.
+     * Usage example: {@code removeFrom(persons, whereFalse(Person.class).isAdult())}
+     * @param from - given collection
+     * @param predicate - placeholder for "whenTrue" or "whenFalse" construction
+     * @param <T> - type of collection
+     * @return given collection
+     */
+    public static <T> Collection<T> removeFrom(Collection<T> from, boolean predicate) {
+        return removeByPredicate(from);
+    }
 }
