@@ -1,4 +1,4 @@
-# J7Group
+![J7Group](logo.jpg)
 ## Description
 J7Group is a small open source Java library which provide convenient, DSL like, and type safe way for manipulation with collections.
 It allows to perform such operations as **collect**, **groupBy**, **filter** and **map** without lyambda expressions (e.g. in Java 7 and below.)
