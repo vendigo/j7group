@@ -1,6 +1,10 @@
 ![j7Group](/logo.png?raw=true "j7Group")
+
+[![Build Status](https://travis-ci.org/vendigo/j7group.svg?branch=master)](https://travis-ci.org/vendigo/j7group)
+[![Maven Central](https://img.shields.io/maven-central/v/com.github.vendigo/j7group.svg)](http://search.maven.org/#search%7Cga%7C1%7Cj7group)
+
 ## Description
-J7Group is a small open source Java library which provide convenient, DSL like, and type safe way for manipulation with collections.
+J7Group is a open source Java library which provide convenient, DSL like, and type safe way for manipulation with collections.
 It allows to perform such operations as **collect**, **groupBy**, **filter** and **map** without lyambda expressions (e.g. in Java 7 and below.)
 For detailed documentation check Javadoc of [J7Group.java](https://github.com/vendigo/j7group/blob/master/src/main/java/com/github/vendigo/j7group/J7Group.java). 
 To see all possible use cases check [J7GroupTest.java](https://github.com/vendigo/j7group/blob/master/src/test/java/com/github/vendigo/j7group/J7GroupTest.java).
@@ -92,7 +96,7 @@ Build mapping from name to surname:
     // Got {"Stan" -> "Marsh", "Kyle" -> "Broflovski", "Eric" -> "Cartman", "Kenny" -> "McCormick", "Randy" -> "Marsh"}
 ```
 
-Collect all adults:
+Collect all children:
 
 ```java
     List<Person> adults = collect(characters, whenFalse(Person.class).isAdult());
